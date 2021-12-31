@@ -1,0 +1,17 @@
+# Node
+node_modules
+
+# Go
+bin
+
+# Common
+.env
+
+# MacOS
+.DS_Store
+
+# JetBrains
+.idea
+
+# VSCode
+.vscode
