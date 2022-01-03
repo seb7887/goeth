@@ -1,39 +1,37 @@
 package main
 
 import (
-	"context"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethclient"
+	"crypto/ecdsa"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/crypto"
+	"golang.org/x/crypto/sha3"
 	"log"
-	"math"
-	"math/big"
 )
 
 const ADDRESS = "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"
 
 func main() {
-	client, err := ethclient.Dial("http://localhost:8545")
+	privateKey, err := crypto.GenerateKey()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Println("we have a connection")
+	privKeyBytes := crypto.FromECDSA(privateKey)
+	log.Println(hexutil.Encode(privKeyBytes)[2:])
 
-	account := common.HexToAddress(ADDRESS)
-	balance, err := client.BalanceAt(context.Background(), account, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fbalance := new(big.Float)
-	fbalance.SetString(balance.String())
-	ethValue := new(big.Float).Quo(fbalance, big.NewFloat(math.Pow10(18)))
-
-	log.Println(ethValue)
-
-	pendingBalance, err := client.PendingBalanceAt(context.Background(), account)
-	if err != nil {
-		log.Fatal(err)
+	publicKey := privateKey.Public()
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+	if !ok {
+		log.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
 	}
 
-	log.Println(pendingBalance)
+	publicKeyBytes := crypto.FromECDSAPub(publicKeyECDSA)
+	log.Println(hexutil.Encode(publicKeyBytes)[4:])
+
+	address := crypto.PubkeyToAddress(*publicKeyECDSA).Hex()
+	log.Println(address)
+
+	hash := sha3.NewLegacyKeccak256()
+	hash.Write(publicKeyBytes[1:])
+	log.Println(hexutil.Encode(hash.Sum(nil)[12:]))
 }
