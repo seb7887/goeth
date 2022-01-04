@@ -16,6 +16,7 @@
   "scripts": {
     "chain": "hardhat node",
     "compile": "hardhat compile",
+    "console": "hardhat console --network localhost",
     "deploy": "hardhat run ./scripts/deploy.ts --network localhost",
     "test": "hardhat test"
   }
