@@ -1,4 +1,5 @@
 import "@nomiclabs/hardhat-waffle"
+import "hardhat-abi-exporter"
 import { task } from "hardhat/config"
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -19,4 +20,13 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  */
 module.exports = {
   solidity: "0.8.4",
+  abiExporter: {
+    path: "./data/abi",
+    runOnCompile: true,
+    clear: true,
+    flat: true,
+    only: [":ERC20$"],
+    spacing: 2,
+    pretty: true,
+  }
 }
