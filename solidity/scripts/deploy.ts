@@ -7,6 +7,13 @@ async function main() {
     await store.deployed()
 
     console.log("Store contract deployed to address: ", store.address)
+
+    const Token = await ethers.getContractFactory("Token")
+    const token = await Token.deploy("Token", "TKN", 31337)
+
+    await token.deployed()
+
+    console.log("Token contract deployed to address: ", token.address)
 }
 
 main()
