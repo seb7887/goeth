@@ -8,8 +8,10 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"log"
+	"math"
 	"math/big"
 	"seb7887/goeth/internal/store"
+	"seb7887/goeth/internal/token"
 )
 
 func main() {
@@ -75,4 +77,41 @@ func main() {
 	}
 
 	log.Println(string(res[:]))
+
+	tknAddress := common.HexToAddress("0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512")
+	tknInstance, err := token.NewToken(tknAddress, client)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	deployer := common.HexToAddress("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266")
+	bal, err := tknInstance.BalanceOf(&bind.CallOpts{}, deployer)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	name, err := tknInstance.Name(&bind.CallOpts{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	symbol, err := tknInstance.Symbol(&bind.CallOpts{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	decimals, err := tknInstance.Decimals(&bind.CallOpts{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println(name)
+	log.Println(symbol)
+	log.Println(decimals)
+
+	fbal := new(big.Float)
+	fbal.SetString(bal.String())
+	balance := new(big.Float).Quo(fbal, big.NewFloat(math.Pow10(int(decimals))))
+
+	log.Println(balance)
 }
