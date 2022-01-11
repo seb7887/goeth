@@ -7,4 +7,5 @@ data
 
 #Hardhat files
 cache
-artifacts
+artifact
+s
